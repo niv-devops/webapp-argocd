@@ -1,0 +1,27 @@
+name: Update Kubernetes Manifests
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Update image version in manifest
+        run: |
+          new_version=${GITHUB_REF#refs/tags/}
+          sed -i "s|devopsgoofy/weather-webapp:.*|devopsgoofy/weather-webapp:${new_version}|g" deployment.yaml
+
+      - name: Commit and push changes back to repo
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "action@github.com"
+          git add deployment.yaml
+          git commit -m "Update image version to ${new_version} [skip ci]"
+          git push origin main
