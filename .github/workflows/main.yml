@@ -17,8 +17,8 @@ jobs:
 
       - name: Update image version in manifest
         run: |
-          new_version=${{ github.event.client_payload.sha }}  # Get the sha from the payload
-          sed -i "s|devopsgoofy/weather-webapp:.*|devopsgoofy/weather-webapp:${new_version}|g" manifests/deployment.yaml
+          new_version=${{ github.event.client_payload.sha }}
+          sed -i "s|devopsgoofy/weather-webapp:.*|devopsgoofy/weather-webapp:${new_version}|g" deployment.yaml
 
       - name: Commit and push changes back to repo
         run: |
