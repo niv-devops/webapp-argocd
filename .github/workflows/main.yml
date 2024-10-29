@@ -1,8 +1,9 @@
 name: Update Kubernetes Manifests
 
 on:
-  workflow_dispatch:
   push:
+  repository_dispatch:
+    types: [update-manifest]
 
 permissions:
   contents: write
@@ -14,18 +15,15 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Get latest commit SHA from another repo
-        id: get_sha
+      - name: Update image version in manifest
         run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          SHA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/niv-devops/weather-webapp/git/refs/tags/${TAG}" | jq -r .object.sha)
-          sed -i "s|devopsgoofy/weather-webapp:.*|devopsgoofy/weather-webapp:$sha|g" deployment.yaml
+          new_version=${{ github.event.client_payload.sha }}  # Get the sha from the payload
+          sed -i "s|devopsgoofy/weather-webapp:.*|devopsgoofy/weather-webapp:${new_version}|g" manifests/deployment.yaml
 
       - name: Commit and push changes back to repo
         run: |
           git config user.name "GitHub Actions"
           git config user.email "action@github.com"
-          git add deployment.yaml
-          git commit -m "Update image version to $sha [skip ci]"
+          git add manifests/deployment.yaml
+          git commit -m "Update image version to ${new_version} [skip ci]"
           git push origin HEAD:refs/heads/main
