@@ -2,13 +2,6 @@
 
 This repository contains the declarative Kubernetes manifests for deploying the Weather WebApp using ArgoCD and GitOps principles.
 
-## Table of Contents
-
-- [Repository Structure](#repository-structure)
-- [Getting Started](#getting-started)
-- [Deployment with ArgoCD](#deployment-with-argocd)
-- [Updating the Application](#updating-the-application)
-
 ## Repository Structure
 
 ```
