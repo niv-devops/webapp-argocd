@@ -20,12 +20,12 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           SHA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/niv-devops/weather-webapp/git/refs/tags/${TAG}" | jq -r .object.sha)
-          sed -i "s|devopsgoofy/weather-webapp:.*|devopsgoofy/weather-webapp:$sha|g" manifests/deployment.yaml
+          sed -i "s|devopsgoofy/weather-webapp:.*|devopsgoofy/weather-webapp:$sha|g" deployment.yaml
 
       - name: Commit and push changes back to repo
         run: |
           git config user.name "GitHub Actions"
           git config user.email "action@github.com"
-          git add manifests/deployment.yaml
+          git add deployment.yaml
           git commit -m "Update image version to $sha [skip ci]"
           git push origin HEAD:refs/heads/main
